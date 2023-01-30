@@ -19,8 +19,11 @@ public class PlayerControl : MonoBehaviour
     public GameObject gameOver;
     private int cubeNumber=12;
 
-    public Transform Level2Teleport;
+    public Transform nextLevelTeleport;
+    public GameObject nextLevelPortal;
 
+    int currentLevelCounter;
+    int levels = 2;
     // Start is called before the first frame update
     void Start()
     {
@@ -68,6 +71,8 @@ public class PlayerControl : MonoBehaviour
             other.gameObject.SetActive(false);
             score += cubePoints; //Increase score when touching a cube
             SetScoreText();
+            CheckLevelComplete();
+
         }
         if (other.tag == "Enemy")
         {
@@ -76,9 +81,11 @@ public class PlayerControl : MonoBehaviour
             Time.timeScale = 0; //Freeze game when we lose - normal game velocity is 1.
 
         }
-        if(other.tag == "Teleport")
+
+        if(other.tag == "Portal")
         {
-            transform.position = Level2Teleport.position;
+            transform.position = nextLevelTeleport.position;
+            currentLevelCounter = 0;
         }
     }
 
@@ -86,10 +93,20 @@ public class PlayerControl : MonoBehaviour
     {
         scoreText.text = "Score " + score; //UI element TextMeshPro
 
-        if(score >= cubeNumber * cubePoints) //we have 12 cubes
+        if(score >= levels * cubeNumber * cubePoints) //we have 12 cubes
         {
             winText.SetActive(true);
             Time.timeScale = 0; //Freeze game when we win - normal game velocity is 1.
+        }
+    }
+
+    void CheckLevelComplete()
+    {
+        currentLevelCounter++;
+        if(currentLevelCounter==cubeNumber)
+        {
+            nextLevelPortal.SetActive(true);
+
         }
     }
 }
